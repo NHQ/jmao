@@ -1,6 +1,8 @@
 // metadata is base64 encoded JSON with a semi-colon terminator?
 // sure
+window.Buffer = Buffer
 
+module.exports = deconstruct
 
 function deconstruct(val){
 
@@ -18,12 +20,13 @@ function deconstruct(val){
       res.data = new Float64Array(1)
       res.data[0] = val
     }
-    else if(res.name == 'String')}
+    else if(res.name == 'String'){
       res.data = new Buffer(val).buffer
     }
+  
   }catch(err){
     // undefined or null or isNaN
-    if(){}
+    //if(){}
   }
 
   return res
