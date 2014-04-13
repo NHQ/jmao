@@ -7,26 +7,56 @@ module.exports = deconstruct
 function deconstruct(val){
 
   var res = Object.create(null)
-  res.name = new String()
+  res.meta = Object.create(null)
+  res.meta.type = new String()
+  
+  var reg = new RegExp('[0-9]+(?=darray)')
+  var r;
 
   try{
-    res.name = val.constructor.name
-    if(res.name == 'Object' || res.name == 'Array'){
+    res.meta.tpye = val.constructor.name
+    if(res.meta.type == 'Object' || res.name == 'Array'){
       for(var y in val){
         res.data = deconstruct(val[y])
       }
     }
-    else if(res.name == 'Number'){
-      res.data = new Float64Array(1)
-      res.data[0] = val
+    else if(res.meta.type == 'Number'){
+      var data = new Float64Array(1)
+      data[0] = val
+      res.data = data.buffer
     }
-    else if(res.name == 'String'){
+    else if(res.meta.type == 'String'){
       res.data = new Buffer(val).buffer
     }
-  
+    else if(res.meta.type == 'Function'){
+      var str = val.toString();
+      res.meta.name = val.name
+      var regArgs = /\(([^)]+)\)/;
+      res.meta.arguments = regArgs.exec(str)[1]
+      var i = str.indexOf('{')
+      var ii = str.lastIndexOf('}')
+      res.data = str.slice(i+1, ii)
+    }
+    else if(r = reg.exec(res.meta.type)){
+      // ndarray!
+      res.meta.dimensions = Number(r[0])
+      res.meta.shape = val.shape.join()
+      var data = deconstruct(val.data)
+      res.meta.ndarrayType = data.name
+      res.data = data.data
+    }
+    else if(Buffer.isBuffer(val)){
+      res.meta.type = 'Buffer'
+      res.data = deconstruct(val.buffer).data
+    }
+    else{
+      // must me a TypedArray of ArrayBuffer
+      if()
+    }
   }catch(err){
     // undefined or null or isNaN
-    //if(){}
+    res.meta.name = String(val)
+    res.data = null
   }
 
   return res
