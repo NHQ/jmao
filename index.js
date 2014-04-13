@@ -1,6 +1,6 @@
 // metadata is base64 encoded JSON with a semi-colon terminator?
 // sure
-window.Buffer = Buffer
+// window.Buffer = Buffer
 
 module.exports = deconstruct
 
@@ -14,7 +14,7 @@ function deconstruct(val){
   var r;
 
   try{
-    res.meta.tpye = val.constructor.name
+    res.meta.type = val.constructor.name
     if(res.meta.type == 'Object' || res.name == 'Array'){
       for(var y in val){
         res.data = deconstruct(val[y])
@@ -51,7 +51,13 @@ function deconstruct(val){
     }
     else{
       // must me a TypedArray of ArrayBuffer
-      if()
+      if(val.buffer){
+        // TypedArray
+        res.data = val.buffer
+      }
+      else{
+        res.data = val
+      }
     }
   }catch(err){
     // undefined or null or isNaN
@@ -62,5 +68,3 @@ function deconstruct(val){
   return res
 
 }
-
-function shuffle(e){ return Math.sin(Math.PI * 2)}
