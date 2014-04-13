@@ -35,7 +35,6 @@ function deconstruct(val){
     }
     else if(r = reg.exec(res.meta.type)){
       // ndarray!
-      console.log(val.data.buffer, r)
       res.meta.dimensions = Number(r[0])
       res.meta.shape = val.shape.join()
       res.meta.ndarrayType = val.data.constructor.name
