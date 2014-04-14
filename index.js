@@ -9,7 +9,7 @@ function deconstruct(val, key){
   var res = Object.create(null)
   res.meta = Object.create(null)
   res.meta.type = new String()
-  
+  if(key) res.meta.key = key;
   var reg = new RegExp('[0-9]+(?=darray)')
   var reg = new RegExp('[0-9]+(?=d)')
   var nodeFlag = false
@@ -19,12 +19,14 @@ function deconstruct(val, key){
     res.meta.type = val.constructor.name
     if(res.meta.type == 'Object' || res.meta.type == 'Array'){
       if(Array.isArray(val)){
+        res.meta.index = []
         res.data = val.map(function(e,i){
-          return deconstruct(e)
+          var x = deconstruct(e)
+          res.meta.index[i] = x.byteLength
+          return x
         })
       }
       else{
-        if(key) res.meta.key = key;
         res.data = Object.keys(val)
         res.meta.index = []
         res.data = res.data.map(function(e,i){
@@ -32,8 +34,14 @@ function deconstruct(val, key){
           res.meta.index[i] = r.byteLength
           return r
         })
-        console.log(res.meta.index)//data)
       }
+        var blob = new Int8Array(res.meta.index.reduce(function(p,e){p+=e;return p},0))
+        var offset = 0;
+        res.meta.index.forEach(function(e, i){
+          blob.set(res.data[i], offset + e)
+          offset+=e
+        })
+        res.data = blob.buffer
     }
     else if(res.meta.type == 'Number'){
       if(val == Infinity || val == -Infinity){ // infinity or -infinity
@@ -90,19 +98,22 @@ function deconstruct(val, key){
   }catch(err){
     // undefined or null or isNaN
     //console.log(err)
+    res.meta.type = 'nil'
     res.meta.name = String(val)
     res.data = new ArrayBuffer(0)
   }
-  if(process.title == 'node' && !res.meta.nodeFlag){
-    if(!res.meta.nodeFlag) res.data = new Buffer(new Int8Array(res.data))
-  } 
+//  if(process.title == 'node' && !res.meta.nodeFlag){
+//    if(!res.meta.nodeFlag) res.data = new Buffer(new Int8Array(res.data))
+//  } 
   
   res.meta.byteLength = res.data.byteLength
   var header = toBase64(JSON.stringify(res.meta)) + ';'
+  var body = new Buffer(new Int8Array(res.data))
   var buf = new Buffer(res.data.byteLength + header.length)
   buf.write(header, 0, header.length, 'utf8')
-  buf.writeInt8(new Int8Array(res.data), header.length, buf.length - 1)
-console.log(val, res.data, buf.buffer.byteLength)
+  body.copy(buf, header.length)
+//  buf.copy(new Int8Array(res.data), header.length, buf.length - 1)
+//  console.log(buf.toString())  
   return buf.buffer
 
 }

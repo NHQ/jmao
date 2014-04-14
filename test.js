@@ -3,7 +3,7 @@ var ds = require('./index');
 var cs = require('./construct');
 var ndarray = require('ndarray')
 var test = require('tape')
-var str = 'for you my mooncalf';
+var str = 'for you my mooncalf, barmies, halfwits, and dodos';
 var n = 1e9
 var fn = function name(foo,balls){ 
   return function(biz,baap){
@@ -24,7 +24,7 @@ console.log(cs(ds(fn)))
 console.log(cs(ds(ab)))
 console.log(cs(ds(f32)))
 console.log(cs(ds(nd)))
-console.log((ds(arr)))
+console.log(cs(ds(arr)))
 console.log(cs(ds(obj)))
 
 /*
