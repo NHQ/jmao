@@ -2,6 +2,7 @@
 // sure
 
 var toBase64 = require('js-base64').Base64.toBase64
+var construct = require('./construct')
 module.exports = deconstruct
 
 function deconstruct(val, key){
@@ -27,18 +28,22 @@ function deconstruct(val, key){
         })
       }
       else{
-        res.data = Object.keys(val)
+        var keys = Object.keys(val)
         res.meta.index = []
-        res.data = res.data.map(function(e,i){
+        res.data = keys.map(function(e,i){
           var r = deconstruct(val[e], e)
-          res.meta.index[i] = r.byteLength
+          res.meta.index.push(r.byteLength)
           return r
         })
       }
         var blob = new Int8Array(res.meta.index.reduce(function(p,e){p+=e;return p},0))
         var offset = 0;
         res.meta.index.forEach(function(e, i){
-          blob.set(res.data[i], offset + e)
+          //console.log('eheheh', e, res.data[i].byteLength)
+
+          blob.set(new Int8Array(res.data[i]), offset)
+          //console.log('CONSTRUCTION GOING ON', '\n', construct(res.data[i]))
+          //console.log('RECONSTRUCTION GOING ON', '\n', construct(blob.buffer.slice(offset, offset + e)))
           offset+=e
         })
         res.data = blob.buffer
@@ -48,9 +53,11 @@ function deconstruct(val, key){
         res.data = new ArrayBuffer(0)
         res.meta.name = String(val)
       }
-      var data = new Float64Array(1)
-      data[0] = val
-      res.data = data.buffer
+      else{
+        var data = new Float64Array(1)
+        data[0] = val
+        res.data = data.buffer
+      }
     }
     else if(res.meta.type == 'String'){
       res.data = new Buffer(val).buffer
@@ -80,7 +87,7 @@ function deconstruct(val, key){
     else if(Buffer.isBuffer(val)){
       res.meta.type = 'Buffer'
       res.meta.nodeFlag = false
-      res.data = deconstruct(val.buffer).data
+      res.data = val.buffer //deconstruct(val.buffer).data
     }
     else if(res.meta.type == 'RegExp'){
       res.data = new Buffer(val.toString()).buffer
