@@ -6,6 +6,22 @@
   "scripts": {
     "test": "node test.js"
   },
+  "dependencies" : {
+    "js-base64" : "2.1.5"
+  },
+  "dev-dependencies" : {
+    "tape" : ""
+  },
+  "testling" : {
+    "files" : "test.js",
+    "browsers" : {
+      "chrome/latest",
+      "firefox/latest",
+      "ipad/6.0",
+      "ipad/7.1",
+      "opera/latest"
+    }
+  },
   "keywords": [
     "ArrayBuffer",
     "Buffer",
