@@ -1,20 +1,20 @@
 {
   "name": "jmao",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "JS to ArrayBuffer to JS",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
   },
-  "dependencies" : {
-    "js-base64" : "2.1.5"
+  "dependencies": {
+    "js-base64": "2.1.5"
   },
-  "dev-dependencies" : {
-    "tape" : ""
+  "dev-dependencies": {
+    "tape": ""
   },
-  "testling" : {
-    "files" : "test.js",
-    "browsers" : [ 
+  "testling": {
+    "files": "test.js",
+    "browsers": [
       "chrome/latest",
       "firefox/latest",
       "ipad/6.0",
