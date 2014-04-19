@@ -1,11 +1,12 @@
-window.Buffer = Buffer
-var ds = require('./index');
-var cs = require('./construct');
+//window.Buffer = Buffer
+var xxx = require('./')
+var ds = xxx.deconstruct;
+var cs = xxx.construct;
 var ndarray = require('ndarray')
 var test = require('tape')
 var str = 'for you my mooncalf';
 var n = 1/9
-var fn = function name(foo,balls){ 
+var fn = function(foo,balls){ 
   return function(biz,baap){
     return foo + balls + biz + baap
   }
@@ -16,9 +17,30 @@ var ab = new ArrayBuffer(16)
 var f32 = new Float64Array(1)
 f32[0] = 1/2
 var nd = new ndarray(new Float32Array(4), [2,2])
-var arr = [null, undefined, NaN, Infinity, -Infinity, str, n, ab, f32, fn, nd]
-var nest = {one: 1, two: {two: 'two', three: {three: fn}}}
-var obj = {null: null, u: undefined, nan: NaN, inf: Infinity, ninf: -Infinity, str: str, n: n, fn: fn, ab: ab, f32: f32, nd: nd, arr: arr, nest: nest}
+var arr = [null, undefined, Infinity, -Infinity, str, n, ab, f32, nd]
+var nest = {one: 1, two: {two: 'two', three: {three: 4}}}
+var obj = {null: null, u: undefined, inf: Infinity, ninf: -Infinity, str: str, n: n, ab: ab, f32: f32, nd: nd, arr: arr, nest: nest}
+
+test('String', function(t){
+  t.equal(str, cs(ds(str)))
+  t.equal(n, cs(ds(n)))
+  t.equal(fn(2,3)(4,5), cs(ds(fn))(2,3)(4,5))
+  t.deepLooseEqual(reg, cs(ds(reg)))
+  t.deepLooseEqual(buffa, cs(ds(buffa)))//.toString())
+  t.deepLooseEqual(ab, cs(ds(ab)))
+  t.deepLooseEqual(f32, cs(ds(f32)))
+  t.deepLooseEqual(null, cs(ds(null)))
+  t.deepLooseEqual(undefined, cs(ds(undefined)))
+  t.deepEqual(isNaN(NaN), isNaN(cs(ds(NaN))))
+  t.deepLooseEqual(Infinity, cs(ds(Infinity)))
+  t.deepLooseEqual(-Infinity, cs(ds(-Infinity)))
+  t.deepLooseEqual(nd, cs(ds(nd)))
+  t.deepLooseEqual(arr, cs(ds(arr)))
+  t.deepLooseEqual(obj, cs(ds(obj)))
+
+
+})
+/*
 console.log(cs(ds(null)))
 console.log(cs(ds(undefined)))
 console.log(cs(ds(Infinity)))
@@ -32,8 +54,6 @@ console.log(cs(ds(buffa)))
 console.log(cs(ds(nd)))
 console.log(cs(ds(arr)))
 console.log(cs(ds(obj)))
-fn = cs(ds(obj))[7]
-console.log(fn(2,3)(4,5))
 /*
 test('string', function(t){
   t.plan(1)

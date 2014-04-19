@@ -14,14 +14,18 @@ function construct(ab){
   for(x; x < ab.length; x++){
     if(ab[x] == 59) break
   }
-  console.log(ab.byteLength, x, from64(ab.toString('utf8', 0, x)))
+  //console.log(ab.byteLength, x, from64(ab.toString('utf8', 0, x)))
   try{
   header = JSON.parse(from64(ab.toString('utf8', 0, x)))
   }catch(err){
     return
   }
   body = buf.slice(ab.byteLength - header.byteLength) || ''
+  
   switch(header.type){
+    case 'Buffer':
+      body = Buffer._augment(new Int8Array(body))
+    break;
     case 'String':
     case 'RegExp':
     // the strings
@@ -57,7 +61,11 @@ function construct(ab){
         var x = construct(body.slice(offset, offset + e))
         offset += e
         return x
-      })
+      }).reduce(function(p,e,i){
+        p[header.keys[i]] = e
+        return p
+      },{})
+    break;
     case 'Array':
     // the complex
       var offset = 0
