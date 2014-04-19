@@ -1,4 +1,4 @@
-### xxx
+# xxx (currently published as jmao)
 
 This dangerous module converts any arbitrary JS into an ArrayBuffer, and converts any such ArrayBuffer back to JS.
 
@@ -18,7 +18,7 @@ Another reason is to build a node style event interface between web workers, ifr
 
 This module exports two functions:
 ```js
-var xxx = require('xxx')
+var xxx = require('jmao')
 var deconstruct = xxx.deconstruct
 var construct = xxx.construct
 ```
