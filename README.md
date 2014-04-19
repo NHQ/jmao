@@ -2,7 +2,9 @@
 
 This dangerous module converts any arbitrary JS into an ArrayBuffer, and converts any such ArrayBuffer back to JS.
 
-It includs special handling for [browserify's](http://npmjs.org/package/browserify) Node Buffer, and for [ndarrays](htts://npmjs.org/package/ndarray).
+It includes special handling for [browserify's](http://npmjs.org/package/browserify) Node Buffer, and for [ndarrays](htts://npmjs.org/package/ndarray).
+
+It also handles functions, using the Function constructor.
 
 ## Johnny, why?
 
